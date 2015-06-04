@@ -37,11 +37,11 @@ def format_special(x, members, channels):
     else:
         label = xs[0]
     if x[0] == '#':
-        return '#' + channels[xs[0]]['name']
+        return '#' + channels[xs[0][1:]]['name']
     elif x[0] == '@':
-        return '@' + members[xs[0]]['name']
+        return '@' + members[xs[0]][1:]['name']
     elif x[0] == '!':
-        return '!' + label
+        return label
     else:
         return '<a href="%s">%s</a>' % (xs[0], label)
 
