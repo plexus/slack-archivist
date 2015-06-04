@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
         shutil.copy2('template/global.css', out_dir)
 
-        renderer = pystache.Renderer(search_dirs='template')
+        renderer = pystache.Renderer(search_dirs='template', string_encoding='utf8')
         for channel_name, dates in data.iteritems():
             p = os.path.join(out_dir, channel_name)
             try:
