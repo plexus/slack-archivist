@@ -310,7 +310,6 @@ body {
 /* line 45, ../tests/sass/components/_message.scss */
 .message_content {
     color: #8b898f;
-    font-style: italic;
     display: block;
     min-height: 1rem;
 }
