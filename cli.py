@@ -61,11 +61,11 @@ if __name__ == "__main__":
                     break
 
             if not is_human_in_chan:
-                human.api_call('channels.join', name=channel['name'])
+                print human.api_call('channels.join', name=channel['name'])
 
             print human.api_call('channels.invite', channel=chan_id, user=bot_id)
 
             if not is_human_in_chan:
-                human.api_call('channels.leave', channel=chan_id)
+                print human.api_call('channels.leave', channel=chan_id)
 
 
