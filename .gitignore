@@ -1,0 +1,5 @@
+*.pyc
+/rtmbot.conf
+env
+/logs/**
+/.idea
