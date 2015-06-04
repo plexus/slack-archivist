@@ -165,4 +165,5 @@ if __name__ == "__main__":
                 date, _ = os.path.splitext(os.path.basename(html))
                 dates.append({'date': date})
             with codecs.open(os.path.join(p, 'index.html'), 'wb', 'utf-8') as f:
-                f.write(renderer.render_path('template/channel-index.mustache', {'dates': dates, }))
+                f.write(renderer.render_path('template/channel-index.mustache', {'dates': dates,
+                                                                                 'active_channel': channel['name']}))
