@@ -85,6 +85,10 @@ if __name__ == "__main__":
         for channel in channels:
             print '>>>', channel['name']
 
+            if channel['is_archived']:
+                print "is archived"
+                continue
+
             chan_id = channel['id']
             is_human_in_chan = False
             is_bot_in_chan = False
