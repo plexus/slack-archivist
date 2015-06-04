@@ -7,10 +7,32 @@
     <link href='http://fonts.googleapis.com/css?family=Lato:400,700,900' rel='stylesheet' type='text/css'>
 </head>
 <body>
-<ul>
-    {{#channels}}
-        <li><a href="{{name}}/index.html">{{name}}</a></li>
-    {{/channels}}
-</ul>
+<h1>Clojurians Slack Log</h1>
+
+<p>Log index is split by channels and dates and generally not usable directly.
+    Try to search it with Google or your favorite engine.</p>
+
+<div>
+    <script>
+        (function () {
+            var cx = '013380573155656398642:nms0sjt9_0u';
+            var gcse = document.createElement('script');
+            gcse.type = 'text/javascript';
+            gcse.async = true;
+            gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+                    '//cse.google.com/cse.js?cx=' + cx;
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(gcse, s);
+        })();
+    </script>
+    <gcse:search></gcse:search>
+</div>
+<div>
+    <ul>
+        {{#channels}}
+            <li><a href="{{name}}/index.html">{{name}}</a></li>
+        {{/channels}}
+    </ul>
+</div>
 </body>
 </html>
