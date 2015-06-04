@@ -98,6 +98,8 @@ if __name__ == "__main__":
             with open(p, 'rb') as f:
                 for msg in f:
                     msg = json.loads(msg)
+                    if 'user' not in msg:
+                        continue
                     user_id = msg['user']
                     msg['user'] = members[user_id]['name']
                     msg['avatar'] = members[user_id]['profile']['image_48']
