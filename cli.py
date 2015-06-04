@@ -122,6 +122,9 @@ if __name__ == "__main__":
         shutil.copy2('template/global.css', out_dir)
         today = datetime.today().strftime('%Y-%m-%d')
 
+        with codecs.open(os.path.join(out_dir, 'index.html'), 'wb', 'utf-8') as f:
+            f.write(renderer.render_path('template/index.mustache', {'channels': channels.values(), }))
+
         for channel in channels.values():
             p = os.path.join(out_dir, channel['name'])
             try:
@@ -148,7 +151,18 @@ if __name__ == "__main__":
 
             for channel_name, msgs in data.iteritems():
                 with codecs.open(os.path.join(out_dir, channel_name, date) + '.html', 'wb', 'utf-8') as f:
-                    f.write(renderer.render_path('template/index.mustache', {'active_channel': channel_name,
-                                                                             'channels': channels.values(),
-                                                                             'messages': msgs,
-                                                                             'date': date}))
+                    f.write(renderer.render_path('template/day.mustache', {'active_channel': channel_name,
+                                                                           'channels': channels.values(),
+                                                                           'messages': msgs,
+                                                                           'date': date}))
+
+        for channel in channels.values():
+            p = os.path.join(out_dir, channel['name'])
+            dates = []
+            g = glob(os.path.join(p, '????-??-??.html'))
+            g.sort()
+            for html in g:
+                date, _ = os.path.splitext(os.path.basename(html))
+                dates.append({'date': date})
+            with codecs.open(os.path.join(p, 'index.html'), 'wb', 'utf-8') as f:
+                f.write(renderer.render_path('template/channel-index.mustache', {'dates': dates, }))

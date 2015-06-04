@@ -5,12 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{active_channel}} | Clojurians Slack Log</title>
     <link href='http://fonts.googleapis.com/css?family=Lato:400,700,900' rel='stylesheet' type='text/css'>
+    <link href='../global.css' rel='stylesheet' type='text/css'>
 </head>
 <body>
-<ul>
-    {{#channels}}
-        <li><a href="{{name}}/index.html">{{name}}</a></li>
-    {{/channels}}
-</ul>
+{{> header}}
+<div class="main">
+    {{> listings}}
+    {{> messages}}
+</div>
 </body>
 </html>
