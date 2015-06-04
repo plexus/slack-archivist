@@ -1,7 +1,9 @@
 from datetime import date
 from json import dumps
+import codecs
+
 
 def process_message(data):
-    with open(date.today().strftime('logs/%Y-%m-%d.txt'), 'ab') as f:
+    with codecs.open(date.today().strftime('logs/%Y-%m-%d.txt'), 'ab', 'utf-8') as f:
         f.write(dumps(data))
         f.write("\n")

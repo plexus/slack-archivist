@@ -96,10 +96,10 @@ if __name__ == "__main__":
 
         for p in glob('logs/*.txt'):
             date, _ = os.path.splitext(os.path.basename(p))
-            with open(p, 'rb') as f:
+            with codecs.open(p, 'rb', 'utf-8') as f:
                 for msg in f:
                     msg = json.loads(msg)
-                    if 'user' not in msg:
+                    if ('subtype' in msg) or ('user' not in msg):
                         continue
                     user_id = msg['user']
                     msg['user'] = members[user_id]['name']
