@@ -25,6 +25,16 @@ from docopt import docopt
 import pystache
 import yaml
 from slackclient import SlackClient
+import re
+
+chan_pat = re.compile(r"<#(\w+)(\|\w+)?>")
+user_pat = re.compile(r"<@(\w+)(\|\w+)?>")
+
+def format_text(text, members, channels):
+    text = re.sub(chan_pat, lambda x: '#' + channels[x.group(1)]['name'], text)
+    text = re.sub(user_pat, lambda x: '@' + members[x.group(1)]['name'], text)
+    return text
+
 
 if __name__ == "__main__":
     arguments = docopt(__doc__, version='Slack Archivist v0.1')
@@ -105,6 +115,7 @@ if __name__ == "__main__":
                     msg['user'] = members[user_id]['name']
                     msg['avatar'] = members[user_id]['profile']['image_48']
                     msg['timestamp'] = datetime.fromtimestamp(float(msg['ts'])).strftime('%H:%M:%S')
+                    msg['text'] = format_text(msg['text'], members, channels)
                     data[channels[msg['channel']]['name']][date].append(msg)
 
         out_dir = arguments['<output_dir>']
