@@ -47,7 +47,7 @@ def format_special(x, members, channels):
 
 
 def format_text(text, members, channels):
-    text = re.sub(special_pat, lambda x: format_special(x, members, channels), text)
+    text = re.sub(special_pat, lambda x: format_special(x.group(1), members, channels), text)
     return text
 
 
