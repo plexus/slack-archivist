@@ -1,0 +1,14 @@
+<div class="listings">
+    <p class="disclaimer">This page is not created by, affiliated with, or supported by Slack Technologies, Inc.</p>
+    <div class="listings_channels">
+        <h2 class="listings_header listings_header_date">{{date}}</h2>
+        <h2 class="listings_header">Channels</h2>
+        <ul class="channel_list">
+            {{#channels}}
+                {{> channel}}
+            {{/channels}}
+        </ul>
+
+    </div>
+    <div class="listings_direct-messages"></div>
+</div>
