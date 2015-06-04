@@ -20,19 +20,34 @@ from glob import glob
 from collections import defaultdict
 from datetime import datetime
 import codecs
+import re
 
 from docopt import docopt
 import pystache
 import yaml
 from slackclient import SlackClient
-import re
 
-chan_pat = re.compile(r"<#(\w+)(\|\w+)?>")
-user_pat = re.compile(r"<@(\w+)(\|\w+)?>")
+special_pat = re.compile(r"<(.*?)>")
+
+
+def format_special(x, members, channels):
+    xs = x.split('|', 2)
+    if len(xs) == 2:
+        label = xs[1]
+    else:
+        label = xs[0]
+    if x[0] == '#':
+        return '#' + channels[xs[0]]['name']
+    elif x[0] == '@':
+        return '@' + members[xs[0]]['name']
+    elif x[0] == '!':
+        return '!' + label
+    else:
+        return '<a href="%s">%s</a>' % (xs[0], label)
+
 
 def format_text(text, members, channels):
-    text = re.sub(chan_pat, lambda x: '<em>#' + channels[x.group(1)]['name'] + '</em>', text)
-    text = re.sub(user_pat, lambda x: '<em>@' + members[x.group(1)]['name'] + '</em>', text)
+    text = re.sub(special_pat, lambda x: format_special(x, members, channels), text)
     return text
 
 
@@ -102,11 +117,24 @@ if __name__ == "__main__":
         channels = {x['id']: x for x in channels}
         members = {x['id']: x for x in members}
 
-        data = defaultdict(lambda: defaultdict(list))
+        renderer = pystache.Renderer(search_dirs='template')
+        out_dir = arguments['<output_dir>']
+        shutil.copy2('template/global.css', out_dir)
+        today = datetime.today().strftime('%Y-%m-%d')
 
-        for p in glob('logs/*.txt'):
-            date, _ = os.path.splitext(os.path.basename(p))
-            with codecs.open(p, 'rb', 'utf-8') as f:
+        for channel in channels.values():
+            p = os.path.join(out_dir, channel['name'])
+            try:
+                os.makedirs(p)
+            except OSError:
+                pass
+
+        for log in glob('logs/*.txt'):
+            date, _ = os.path.splitext(os.path.basename(log))
+            # if date == today:
+            #     continue
+            data = defaultdict(list)
+            with codecs.open(log, 'rb', 'utf-8') as f:
                 for msg in f:
                     msg = json.loads(msg)
                     if ('subtype' in msg) or ('user' not in msg):
@@ -116,21 +144,10 @@ if __name__ == "__main__":
                     msg['avatar'] = members[user_id]['profile']['image_48']
                     msg['timestamp'] = datetime.fromtimestamp(float(msg['ts'])).strftime('%H:%M:%S')
                     msg['text'] = format_text(msg['text'], members, channels)
-                    data[channels[msg['channel']]['name']][date].append(msg)
+                    data[channels[msg['channel']]['name']].append(msg)
 
-        out_dir = arguments['<output_dir>']
-
-        shutil.copy2('template/global.css', out_dir)
-
-        renderer = pystache.Renderer(search_dirs='template')
-        for channel_name, dates in data.iteritems():
-            p = os.path.join(out_dir, channel_name)
-            try:
-                os.makedirs(p)
-            except OSError:
-                pass
-            for date, msgs in dates.iteritems():
-                with codecs.open(os.path.join(p, date) + '.html', 'wb', 'utf-8') as f:
+            for channel_name, msgs in data.iteritems():
+                with codecs.open(os.path.join(out_dir, channel_name, date) + '.html', 'wb', 'utf-8') as f:
                     f.write(renderer.render_path('template/index.mustache', {'active_channel': channel_name,
                                                                              'channels': channels.values(),
                                                                              'messages': msgs,
