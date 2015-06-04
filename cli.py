@@ -160,6 +160,9 @@ if __name__ == "__main__":
                                                                            'messages': msgs,
                                                                            'date': date}))
 
+            if date < today:
+                shutil.move(log, os.path.join('backup/clojurians-log', os.path.basename(log)))
+
         for channel in channels.values():
             p = os.path.join(out_dir, channel['name'])
             dates = []
