@@ -41,6 +41,7 @@ if __name__ == "__main__":
         if bot_id is None:
             raise Exception('Bot %s is not found.' % bot_name)
         for channel in channels:
+            print '>>>', channel['name']
             print human.api_call('channels.invite', channel=channel['id'], user=bot_id)
 
 
