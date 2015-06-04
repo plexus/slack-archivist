@@ -31,8 +31,8 @@ chan_pat = re.compile(r"<#(\w+)(\|\w+)?>")
 user_pat = re.compile(r"<@(\w+)(\|\w+)?>")
 
 def format_text(text, members, channels):
-    text = re.sub(chan_pat, lambda x: '#' + channels[x.group(1)]['name'], text)
-    text = re.sub(user_pat, lambda x: '@' + members[x.group(1)]['name'], text)
+    text = re.sub(chan_pat, lambda x: '<em>#' + channels[x.group(1)]['name'] + '</em>', text)
+    text = re.sub(user_pat, lambda x: '<em>@' + members[x.group(1)]['name'] + '</em>', text)
     return text
 
 

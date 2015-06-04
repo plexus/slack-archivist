@@ -284,9 +284,10 @@ body {
 
 /* line 22, ../tests/sass/components/_message.scss */
 .message_username {
-    font-weight: 900;
+    /*font-weight: 900;*/
     padding-right: .25rem;
-    color: #3d3c40 !important;
+    /*color: #3d3c40 !important;*/
+    color: #8b898f;
     margin-left: 0;
     font-style: normal;
     text-decoration: none;
@@ -309,7 +310,7 @@ body {
 
 /* line 45, ../tests/sass/components/_message.scss */
 .message_content {
-    color: #8b898f;
+    /*color: #8b898f;*/
     display: block;
     min-height: 1rem;
 }
