@@ -2,7 +2,7 @@
 
 Usage:
   cli.py list
-  cli.py invite <human_name> <bot_name>
+  cli.py invite <bot_name>
   cli.py (-h | --help)
   cli.py --version
 
@@ -31,40 +31,16 @@ if __name__ == "__main__":
 
     elif arguments['invite']:
         channels = json.loads(sc.api_call('channels.list'))['channels']
-        members = json.loads(sc.api_call('users.list'))['members']
-
         bot_name = arguments['<bot_name>']
-        human_name = arguments['<human_name>']
+        members = json.loads(sc.api_call('users.list'))['members']
         bot_id = None
-        human_id = None
-
         for member in members:
             if member['name'] == bot_name:
                 bot_id = member['id']
-            elif member['name'] == human_name:
-                human_id = member['id']
-            if bot_id and human_id:
                 break
-
         if bot_id is None:
             raise Exception('Bot %s is not found.' % bot_name)
-        if human_id is None:
-            raise Exception('Human %s is not found.' % human_name)
-
         for channel in channels:
-            chan_id = channel['id']
-            is_human_in_chan = False
-            for member in json.loads(sc.api_call('channels.info', channel=chan_id))['channel']['members']:
-                if member == human_id:
-                    is_human_in_chan = True
-                    break
-
-            if not is_human_in_chan:
-                human.api_call('channels.join', name=channel['name'])
-
-            print human.api_call('channels.invite', channel=chan_id, user=bot_id)
-
-            if not is_human_in_chan:
-                human.api_call('channels.leave', channel=chan_id)
+            print human.api_call('channels.invite', channel=channel['id'], user=bot_id)
 
 
