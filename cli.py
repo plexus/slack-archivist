@@ -18,7 +18,8 @@ import json
 import shutil
 from glob import glob
 from collections import defaultdict
-from datetime  import datetime
+from datetime import datetime
+import codecs
 
 from docopt import docopt
 import pystache
@@ -110,7 +111,7 @@ if __name__ == "__main__":
 
         shutil.copy2('template/global.css', out_dir)
 
-        renderer = pystache.Renderer(search_dirs='template', string_encoding='utf8')
+        renderer = pystache.Renderer(search_dirs='template')
         for channel_name, dates in data.iteritems():
             p = os.path.join(out_dir, channel_name)
             try:
@@ -118,9 +119,8 @@ if __name__ == "__main__":
             except OSError:
                 pass
             for date, msgs in dates.iteritems():
-                with open(os.path.join(p, date) + '.html', 'wb') as f:
+                with codecs.open(os.path.join(p, date) + '.html', 'wb', 'utf-8') as f:
                     f.write(renderer.render_path('template/index.mustache', {'active_channel': channel_name,
                                                                              'channels': channels.values(),
                                                                              'messages': msgs,
                                                                              'date': date}))
-
