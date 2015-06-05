@@ -144,6 +144,7 @@ if __name__ == "__main__":
             with codecs.open(log, 'rb', 'utf-8') as f:
                 for msg in f:
                     msg = json.loads(msg)
+                    channel = msg['channel']
                     if 'subtype' in msg:
                         if msg['subtype'] == 'message_changed':
                             msg = msg['message']
@@ -156,7 +157,7 @@ if __name__ == "__main__":
                     msg['avatar'] = members[user_id]['profile']['image_48']
                     msg['timestamp'] = datetime.fromtimestamp(float(msg['ts'])).strftime('%H:%M:%S')
                     msg['text'] = format_text(msg['text'], members, channels)
-                    data[channels[msg['channel']]['name']][msg['ts']] = msg
+                    data[channels[channel]['name']][msg['ts']] = msg
 
             for channel_name, msgs in data.iteritems():
                 with codecs.open(os.path.join(out_dir, channel_name, date) + '.html', 'wb', 'utf-8') as f:
