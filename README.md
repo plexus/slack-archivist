@@ -7,7 +7,7 @@ Any cleanup/improvement/bugfix PRs are welcome and are highly appreciated.
 
 Dependencies
 ----------
-See [requirements.txt](src/master/requirements.txt)
+See [requirements.txt](requirements.txt)
 
 Installation
 -----------
@@ -37,7 +37,7 @@ To invite bot to all channels, run `cli.py invite human_name bot_name`, where na
 
 Export to html
 --------------
-Tune `template` content to match your needs. Specifically, [day.mustache](src/master/template/day.mustache) is the root template for messages display,
-and [index.mustache](src/master/template/index.mustache) & [channel-index.mustache](src/master/template/channel-index.mustache) are templates for channels and dates index pages respectively.
+Tune `template` content to match your needs. Specifically, [day.mustache](template/day.mustache) is the root template for messages display,
+and [index.mustache](template/index.mustache) & [channel-index.mustache](template/channel-index.mustache) are templates for channels and dates index pages respectively.
 Then run `cli.py export output_dir` to convert logs to html and move old logs to backup dir.
 *Note:* at the moment too many things, like slack team name, Google CSE widget and backup path are hardcoded, bot was created in hurry. I apologize for that again and will be very grateful for PRs fixing that.
