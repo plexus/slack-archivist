@@ -26,7 +26,8 @@ from docopt import docopt
 import pystache
 import yaml
 from slackclient import SlackClient
-import gfm
+from markdown import markdown
+from mdx_gfm import GithubFlavoredMarkdownExtension
 
 special_pat = re.compile(r"<(.*?)>")
 
@@ -49,7 +50,7 @@ def format_special(x, members, channels):
 
 def format_text(text, members, channels):
     text = re.sub(special_pat, lambda x: format_special(x.group(1), members, channels), text)
-    return gfm.markdown(text)
+    return markdown(text, extensions=GithubFlavoredMarkdownExtension())
 
 
 if __name__ == "__main__":

@@ -5,4 +5,4 @@ websocket-client
 slackclient
 docopt
 pystache
-gfm
+py-gfm
