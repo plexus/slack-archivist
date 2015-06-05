@@ -17,7 +17,7 @@ import os
 import json
 import shutil
 from glob import glob
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from datetime import datetime
 import codecs
 import re
@@ -140,26 +140,29 @@ if __name__ == "__main__":
 
         for log in glob('logs/*.txt'):
             date, _ = os.path.splitext(os.path.basename(log))
-            # if date == today:
-            #     continue
-            data = defaultdict(list)
+            data = defaultdict(OrderedDict)
             with codecs.open(log, 'rb', 'utf-8') as f:
                 for msg in f:
                     msg = json.loads(msg)
-                    if ('subtype' in msg) or ('user' not in msg):
+                    if 'user' not in msg:
                         continue
+                    if 'subtype' in msg:
+                        if msg['subtype'] == 'message_changed':
+                            msg = msg['message']
+                        else:
+                            continue
                     user_id = msg['user']
                     msg['user'] = members[user_id]['name']
                     msg['avatar'] = members[user_id]['profile']['image_48']
                     msg['timestamp'] = datetime.fromtimestamp(float(msg['ts'])).strftime('%H:%M:%S')
                     msg['text'] = format_text(msg['text'], members, channels)
-                    data[channels[msg['channel']]['name']].append(msg)
+                    data[channels[msg['channel']]['name']][msg['ts']] = msg
 
             for channel_name, msgs in data.iteritems():
                 with codecs.open(os.path.join(out_dir, channel_name, date) + '.html', 'wb', 'utf-8') as f:
                     f.write(renderer.render_path('template/day.mustache', {'active_channel': channel_name,
                                                                            'channels': channels.values(),
-                                                                           'messages': msgs,
+                                                                           'messages': msgs.values(),
                                                                            'date': date}))
 
             if date < today:
