@@ -6,7 +6,7 @@ Usage:
   cli.py list
   cli.py invite <human_name> <bot_name>
   cli.py export <output_dir>
-  cli.py leave <channel>
+  cli.py kick <human_name> <bot_name> <channel>
   cli.py (-h | --help)
   cli.py --version
 
@@ -122,8 +122,7 @@ def export(sc, config, arguments):
                                                                              'active_channel': channel['name']}))
 
 
-def invite(sc, config, arguments):
-    human = SlackClient(config['HUMAN_SLACK_TOKEN'])
+def get_human_tools(sc, config, arguments):
     channels = json.loads(sc.api_call('channels.list'))['channels']
     members = json.loads(sc.api_call('users.list'))['members']
 
@@ -144,6 +143,13 @@ def invite(sc, config, arguments):
         raise Exception('Bot %s is not found.' % bot_name)
     if human_id is None:
         raise Exception('Human %s is not found.' % human_name)
+
+    return channels, members, human_id, bot_id
+
+
+def invite(sc, config, arguments):
+    channels, members, human_id, bot_id = get_human_tools(sc, config, arguments)
+    human = SlackClient(config['HUMAN_SLACK_TOKEN'])
 
     for channel in channels:
         print '>>>', channel['name']
@@ -186,11 +192,35 @@ def list_channels(sc):
     print ', '.join([c['name'] for c in json.loads(sc.api_call('channels.list'))['channels']])
 
 
-def leave(sc, arguments):
-    channels = json.loads(sc.api_call('channels.list'))['channels']
+def kick(sc, config, arguments):
+    human = SlackClient(config['HUMAN_SLACK_TOKEN'])
+    channels, members, human_id, bot_id = get_human_tools(sc, config, arguments)
+
     for channel in channels:
         if channel['name'] == arguments['<channel>']:
-            print sc.api_call('channels.leave', channel=channel['id'])
+            is_human_in_chan = False
+            is_bot_in_chan = False
+
+            for member in json.loads(sc.api_call('channels.info', channel=channel['id']))['channel']['members']:
+                if member == human_id:
+                    is_human_in_chan = True
+                elif member == bot_id:
+                    is_bot_in_chan = True
+
+            if not is_bot_in_chan:
+                print "already not in chan"
+                continue
+
+            if not is_human_in_chan:
+                print "join"
+                human.api_call('channels.join', name=channel['name'])
+
+            print human.api_call('channels.kick', channel=channel['id'], user=bot_id)
+
+            if not is_human_in_chan:
+                print "leave"
+                human.api_call('channels.leave', channel=channel['id'])
+                
             break
 
 
@@ -204,5 +234,5 @@ if __name__ == "__main__":
         invite(sc, config, arguments)
     elif arguments['export']:
         export(sc, config, arguments)
-    elif arguments['leave']:
-        leave(sc, arguments)
+    elif arguments['kick']:
+        kick(sc, config, arguments)
