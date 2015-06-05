@@ -190,7 +190,7 @@ def leave(sc, arguments):
     channels = json.loads(sc.api_call('channels.list'))['channels']
     for channel in channels:
         if channel['name'] == arguments['<channel>']:
-            sc.api_call('channels.leave', channel=channel['id'])
+            print sc.api_call('channels.leave', channel=channel['id'])
             break
 
 
