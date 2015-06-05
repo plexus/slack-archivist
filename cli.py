@@ -144,13 +144,13 @@ if __name__ == "__main__":
             with codecs.open(log, 'rb', 'utf-8') as f:
                 for msg in f:
                     msg = json.loads(msg)
-                    if 'user' not in msg:
-                        continue
                     if 'subtype' in msg:
                         if msg['subtype'] == 'message_changed':
                             msg = msg['message']
                         else:
                             continue
+                    if 'user' not in msg:
+                        continue
                     user_id = msg['user']
                     msg['user'] = members[user_id]['name']
                     msg['avatar'] = members[user_id]['profile']['image_48']
