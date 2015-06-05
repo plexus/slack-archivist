@@ -93,6 +93,8 @@ def export(sc, config, arguments):
                 if 'user' not in msg:
                     continue
                 user_id = msg['user']
+                if user_id == 'USLACKBOT':
+                    continue
                 msg['user'] = members[user_id]['name']
                 msg['avatar'] = members[user_id]['profile']['image_48']
                 msg['timestamp'] = datetime.fromtimestamp(float(msg['ts'])).strftime('%H:%M:%S')
@@ -220,7 +222,7 @@ def kick(sc, config, arguments):
             if not is_human_in_chan:
                 print "leave"
                 human.api_call('channels.leave', channel=channel['id'])
-                
+
             break
 
 
