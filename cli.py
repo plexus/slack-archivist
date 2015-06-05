@@ -93,7 +93,7 @@ def export(sc, config, arguments):
                 if 'user' not in msg:
                     continue
                 user_id = msg['user']
-                if user_id == 'USLACKBOT':
+                if user_id == u'USLACKBOT':
                     continue
                 msg['user'] = members[user_id]['name']
                 msg['avatar'] = members[user_id]['profile']['image_48']
