@@ -191,7 +191,7 @@ body {
 }
 
 .listings_header_date {
-  color: #4c9689;
+    color: #4c9689;
 }
 
 /* line 20, ../tests/sass/components/_listings.scss */
@@ -394,4 +394,36 @@ body {
     bottom: 0;
     min-height: 41px !important;
     padding: 9px 5px 9px 8px;
+}
+
+pre.highlight {
+    margin: .5rem 0 .2rem;
+    font-size: .75rem;
+    line-height: 1.15rem;
+}
+
+pre {
+    background: #fbfaf8;
+    padding: .5rem;
+    word-break: normal;
+    display: block;
+    border: 1px solid rgba(0, 0, 0, .15);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border-radius: 4px;
+}
+
+pre, code {
+    font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+    color: #333;
+}
+
+code {
+    line-height: .72rem;
+    white-space: normal;
+    color: #c25;
+    /*color: #d14;*/
+    padding: 2px 4px;
+    background-color: #f7f7f9;
+    border: 1px solid #e1e1e8;
 }
