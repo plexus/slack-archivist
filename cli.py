@@ -26,6 +26,7 @@ from docopt import docopt
 import pystache
 import yaml
 from slackclient import SlackClient
+import gfm
 
 special_pat = re.compile(r"<(.*?)>")
 
