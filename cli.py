@@ -45,7 +45,7 @@ def format_special(x, members, channels):
     elif x[0] == '!':
         return label
     else:
-        return '<a href="%s">%s</a>' % (xs[0], label)
+        return '[%s](%s)' % (label, xs[0])
 
 
 def format_text(text, members, channels):
