@@ -101,7 +101,7 @@ def export(sc, config, arguments):
                 msg['text'] = format_text(msg['text'], members, channels)
                 data[channels[channel]['name']][msg['ts']] = msg
 
-        channel_names = [{'name': name for name in data.keys()}]
+        channel_names = [{'name': name} for name in data.keys()]
 
         for channel_name, msgs in data.iteritems():
             with codecs.open(os.path.join(out_dir, channel_name, date) + '.html', 'wb', 'utf-8') as f:
