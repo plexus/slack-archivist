@@ -89,7 +89,10 @@ def export(sc, config, arguments):
                     if msg['subtype'] == 'message_changed':
                         msg = msg['message']
                     elif msg['subtype'] == 'message_deleted':
-                        del data[channels[channel]['name']][msg['deleted_ts']]
+                        try:
+                            del data[channels[channel]['name']][msg['deleted_ts']]
+                        except KeyError:
+                            pass
                         continue
                     else:
                         continue
