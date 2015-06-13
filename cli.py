@@ -88,6 +88,9 @@ def export(sc, config, arguments):
                 if 'subtype' in msg:
                     if msg['subtype'] == 'message_changed':
                         msg = msg['message']
+                    elif msg['subtype'] == 'message_deleted':
+                        del data[channels[channel]['name']][msg['deleted_ts']]
+                        continue
                     else:
                         continue
                 if 'user' not in msg:
