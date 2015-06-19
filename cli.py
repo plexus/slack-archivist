@@ -44,7 +44,10 @@ def format_special(x, members, channels):
     if x[0] == '#':
         return '#' + channels[xs[0][1:]]['name']
     elif x[0] == '@':
-        return '@' + members[xs[0][1:]]['name']
+        try:
+            return '@' + members[xs[0][1:]]['name']
+        except KeyError:
+            return label
     elif x[0] == '!':
         return label
     else:
