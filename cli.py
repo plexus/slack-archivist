@@ -51,7 +51,7 @@ def format_special(x, members, channels):
     elif x[0] == '!':
         return label
     else:
-        return '[%s](%s)' % (label, xs[0].replace('(', '%28').replace(')', '%29'))
+        return '[%s](%s)' % (label, xs[0].replace('(', '%28').replace(')', '%29').replace(',', '%2C'))
 
 
 def format_text(text, members, channels):
