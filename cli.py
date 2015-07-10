@@ -109,7 +109,10 @@ def export(sc, config, arguments):
                 msg['avatar'] = members[user_id]['profile']['image_48']
                 msg['timestamp'] = datetime.fromtimestamp(float(msg['ts'])).strftime('%H:%M:%S')
                 msg['text'] = format_text(msg['text'], members, channels)
-                data[channels[channel]['name']][msg['ts']] = msg
+                try:
+                    data[channels[channel]['name']][msg['ts']] = msg
+                except KeyError as e:
+                    print e
 
         channel_names = [{'name': name} for name in data.keys()]
 
