@@ -92,6 +92,8 @@ def export(sc, config, arguments):
                 if 'subtype' in msg:
                     if msg['subtype'] == 'message_changed':
                         msg = msg['message']
+                        if msg['ts'] not in data[channels[channel]['name']]:
+                            continue
                     elif msg['subtype'] == 'message_deleted':
                         try:
                             del data[channels[channel]['name']][msg['deleted_ts']]
