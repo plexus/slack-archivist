@@ -100,6 +100,8 @@ def export(sc, config, arguments):
                         except KeyError:
                             pass
                         continue
+                    elif msg['subtype'] == "file_share":
+                        pass
                     else:
                         continue
                 if 'user' not in msg:
