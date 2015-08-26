@@ -33,6 +33,7 @@ from markdown import markdown
 from mdx_gfm import GithubFlavoredMarkdownExtension
 
 special_pat = re.compile(r"<(.*?)>")
+quirk_link = re.compile(r"\[<([^#@!].*?)>\]")
 
 
 def format_special(x, members, channels):
@@ -56,6 +57,7 @@ def format_special(x, members, channels):
 
 
 def format_text(text, members, channels):
+    text = re.sub(quirk_link, lambda x: "[{}]".format(x.group(1)), text)
     text = re.sub(special_pat, lambda x: format_special(x.group(1), members, channels), text)
     return markdown(text, extensions=[GithubFlavoredMarkdownExtension()])
 
