@@ -25,13 +25,60 @@ from datetime import datetime
 import codecs
 import re
 import string
+import sys; 
 
 from docopt import docopt
 import pystache
 import yaml
 from slackclient import SlackClient
-from markdown import markdown
-from mdx_gfm import GithubFlavoredMarkdownExtension
+
+import hashlib, re
+import markdown as markdown_lib
+
+def gfm(text):
+    """Processes Markdown according to GitHub Flavored Markdown spec."""
+    extractions = {}
+
+    def extract_pre_block(matchobj):
+        match = matchobj.group(0)
+        hashed_match = hashlib.md5(match.encode('utf-8')).hexdigest()
+        extractions[hashed_match] = match
+        result = "{gfm-extraction-%s}" % hashed_match
+        return result
+
+    def escape_underscore(matchobj):
+        match = matchobj.group(0)
+
+        if match.count('_') > 1:
+            return re.sub('_', '\_', match)
+        else:
+            return match
+
+    def newlines_to_brs(matchobj):
+        match = matchobj.group(0)
+        if re.search("\n{2}", match):
+            return match
+        else:
+            match = match.strip()
+            return match + "  \n"
+
+    def insert_pre_block(matchobj):
+        string = "\n\n" + extractions[matchobj.group(1)]
+        return string
+
+    text = re.sub("(?s)<pre>.*?<\/pre>", extract_pre_block, text)
+    text = re.sub("(^(?! {4}|\t)\w+_\w+_\w[\w_]*)", escape_underscore, text)
+    text = re.sub("(?m)^[\w\<][^\n]*\n+", newlines_to_brs, text)
+    text = re.sub("\{gfm-extraction-([0-9a-f]{32})\}", insert_pre_block, text)
+
+    return text
+
+def markdown(text):
+    """Processes GFM then converts it to HTML."""
+    text = gfm(text)
+    text = markdown_lib.markdown(text)
+    return text
+
 
 special_pat = re.compile(r"<(.*?)>")
 quirk_link = re.compile(r"\[<([^#@!].*?)>\]")
@@ -61,12 +108,12 @@ def format_text(text, members, channels):
     text = string.replace(text, "a/&lt;!", "")
     text = re.sub(quirk_link, lambda x: "[{}]".format(x.group(1)), text)
     text = re.sub(special_pat, lambda x: format_special(x.group(1), members, channels), text)
-    return markdown(text, extensions=[GithubFlavoredMarkdownExtension()])
+    return markdown(text)
 
 
 def export(sc, config, arguments):
-    channels = json.loads(sc.api_call('channels.list'))['channels']
-    members = json.loads(sc.api_call('users.list'))['members']
+    channels = sc.api_call('channels.list')['channels']
+    members = sc.api_call('users.list')['members']
 
     channels = {x['id']: x for x in channels}
     members = {x['id']: x for x in members}
@@ -86,11 +133,13 @@ def export(sc, config, arguments):
         except OSError:
             pass
 
-    for log in glob('logs/*.txt'):
+    for log in sorted(glob('logs/*.txt')):
+        print log
         date, _ = os.path.splitext(os.path.basename(log))
         data = defaultdict(OrderedDict)
         with codecs.open(log, 'rb', 'utf-8') as f:
             for msg in f:
+                sys.stdout.write('.') 
                 msg = json.loads(msg)
                 channel = msg['channel']
                 if 'subtype' in msg:
@@ -132,7 +181,7 @@ def export(sc, config, arguments):
                                                                        'date': date}))
 
         if date < today:
-            shutil.move(log, os.path.join('backup/clojurians-log', os.path.basename(log)))
+            shutil.move(log, os.path.join('/var/slackbot/backups/logs', os.path.basename(log)))
 
     for channel in channels.values():
         p = os.path.join(out_dir, channel['name'])
