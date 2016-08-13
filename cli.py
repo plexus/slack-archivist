@@ -164,7 +164,13 @@ def export(sc, config, arguments):
                     continue
                 msg['user'] = members[user_id]['name']
                 msg['avatar'] = members[user_id]['profile']['image_48']
-                msg['timestamp'] = datetime.fromtimestamp(float(msg['ts'])).strftime('%H:%M:%S')
+                # Generate a message id based on the message ts timestamp.
+                # While this could potentially cause a conflict if two messages
+                # have the same timestamp, we're already assuming timestamp
+                # uniqueness when we're adding it to the `data` hash below.
+                msg_datetime = datetime.fromtimestamp(float(msg['ts']))
+                msg['msgid'] = msg_datetime.strftime('inst-%Y-%m-%dT%H:%M:%S.%fZ')
+                msg['timestamp'] = msg_datetime.strftime('%H:%M:%S')
                 msg['text'] = format_text(msg['text'], members, channels)
                 try:
                     data[channels[channel]['name']][msg['ts']] = msg
