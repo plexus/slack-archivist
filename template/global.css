@@ -318,6 +318,10 @@ body {
     color: #5050df;
 }
 
+.message:target {
+    background-color: #FFF8DC;
+}
+
 /* line 45, ../tests/sass/components/_message.scss */
 .message_content {
     /*color: #8b898f;*/
