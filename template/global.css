@@ -308,6 +308,16 @@ body {
     margin-left: 0;
 }
 
+.message_timestamp a {
+    text-decoration: none;
+    color: #babbbf;
+}
+
+.message_timestamp a:hover {
+    text-decoration: underline;
+    color: #5050df;
+}
+
 /* line 45, ../tests/sass/components/_message.scss */
 .message_content {
     /*color: #8b898f;*/
